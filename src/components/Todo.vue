@@ -1,6 +1,7 @@
 <template>
-<section class="bg-white p-5">
-  <form @submit.prevent="addTodo()">
+<section class="bg-white">
+  <form @submit.prevent="addTodo()" class="flex items-center bg-gray-100 p-5">
+    <button @click="doneAll(todos)" v-on:dblclick="notDone(todos)"><i class="fa fa-angle-down text-2xl font-bold px-1" aria-hidden="true"></i></button>
     
     <input class="bg-transparent border border-transparent w-96 mr-3 focus:outline-none focus:ring-0 focus:border-transparent"
       v-model="newTodo"
@@ -9,7 +10,7 @@
       placeholder="What needs to be done?"
     >
   </form>
-  <div class="flex">
+  <div class="flex px-5">
     <ul>
       <li 
       v-for="(todo, index) in todos"
@@ -17,23 +18,23 @@
        <div class="flex justify-center items-center">
          <label><input @click="doneTodo(todo)" class="mr-3 my-2 text-emerald-500 focus:ring-0 focus:ring-offset-0 rounded-full border-slate-200 h-6 w-6" type="checkbox" v-model="todo.done" />
           </label>
-          <p class="items w-96" @click="doneTodo(todo)">{{ todo.content }}</p>
-          <button @click="removeTodo(index)">x</button>
+          <p class="items w-[410px] text-xl" @click="doneTodo(todo)">{{ todo.content }}</p>
+          <button @click="removeTodo(index)"><i class="fa fa-trash text-xl" aria-hidden="true"></i></button>
        </div>
 
       </li>
     </ul>
   </div>
   <h4 h4 v-if="todos.length === 0">Empty list.</h4>
-  <div class="flex " >
-    <p>{{todos.length}}items</p>
-    <div class="px-10">
+  <div class="flex p-5 border border-transparent border-t-gray-200" >
+    <p>{{todos.length}} items</p>
+    <div class="px-10 ">
       <a href="/" class="px-3" >All</a>
       <a  class="px-3" @click="activeitem(todos)">Active</a>
       <a  class="px-3"  @click="completed(todos)">Completed</a>
     </div>
      <div>
-       <a href="/clearCompleted" @click="clearTodo(todos)">Clear completed</a>
+       <a href="/" @click="clearTodo(todos)">Clear completed</a>
     </div>
 </div>
 </section>
@@ -48,6 +49,25 @@ setup () {
     const newTodo = ref('');
     const todosData = JSON.parse(localStorage.getItem('todos')) || [];
     const todos = ref(todosData);
+
+    function doneAll(todos){
+      console.log(todos.length)
+      for(let i = 0 ; i< todos.length; i++){
+          todos[i].done = true;
+      }
+      const storageData = JSON.stringify(todos);
+      localStorage.setItem('todos', storageData);
+    }
+
+    function notDone(todos){
+      console.log('hello')
+      for(let i = 0 ; i< todos.length; i++){
+          todos[i].done = false;
+      }
+      const storageData = JSON.stringify(todos);
+      localStorage.setItem('todos', storageData);
+    }
+
     function addTodo () {
       if (newTodo.value) {
       todos.value.push({
@@ -76,6 +96,7 @@ setup () {
       todos =todos.filter(data => data.done != true);
       const storageData = JSON.stringify(todos);
       localStorage.setItem('todos', storageData);
+      this.todos = JSON.parse(localStorage.getItem('todos')) || [];
     }
 
     function activeitem(todos){
@@ -97,6 +118,8 @@ setup () {
     return {
       todos,
       newTodo,
+      doneAll,
+      notDone,
       addTodo,
       doneTodo,
       removeTodo,
