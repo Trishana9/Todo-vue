@@ -1,8 +1,8 @@
 <template>
-<section class="bg-white">
-  <form @submit.prevent="addTodo()" class="flex items-center bg-gray-100 p-5">
-    <button @click="doneAll(todos)" v-on:dblclick="notDone(todos)"><i class="fa fa-angle-down text-2xl font-bold px-1" aria-hidden="true"></i></button>
-    
+<section class="bg-white shadow-xl">
+  <div class="flex items-center bg-gray-100 p-5">
+  <button @click="doneAll(todos)" v-on:dblclick="notDone(todos)"><i class="fa fa-angle-down text-2xl font-bold px-1" aria-hidden="true"></i></button>
+  <form @submit.prevent="addTodo()">    
     <input class="bg-transparent border border-transparent w-96 mr-3 focus:outline-none focus:ring-0 focus:border-transparent"
       v-model="newTodo"
       name="newTodo"
@@ -10,6 +10,7 @@
       placeholder="What needs to be done?"
     >
   </form>
+  </div>
   <div class="flex px-5">
     <ul>
       <li 
@@ -19,22 +20,22 @@
          <label><input @click="doneTodo(todo)" class="mr-3 my-2 text-emerald-500 focus:ring-0 focus:ring-offset-0 rounded-full border-slate-200 h-6 w-6" type="checkbox" v-model="todo.done" />
           </label>
           <p class="items w-[410px] text-xl" @click="doneTodo(todo)">{{ todo.content }}</p>
-          <button @click="removeTodo(index)"><i class="fa fa-trash text-xl" aria-hidden="true"></i></button>
+          <button @click="removeTodo(index)"><i class="fa fa-trash text-xl hover:text-red-500" aria-hidden="true"></i></button>
        </div>
 
       </li>
     </ul>
   </div>
   <h4 h4 v-if="todos.length === 0">Empty list.</h4>
-  <div class="flex p-5 border border-transparent border-t-gray-200" >
+  <div class="flex px-5 py-2 border-2 border-transparent border-t-gray-200" >
     <p>{{todos.length}} items</p>
     <div class="px-10 ">
-      <a href="/" class="px-3" >All</a>
-      <a  class="px-3" @click="activeitem(todos)">Active</a>
-      <a  class="px-3"  @click="completed(todos)">Completed</a>
+      <a href="/" class="px-3  hover:text-green-400" >All</a>
+      <a  class="px-3 cursor-pointer hover:text-green-400" @click="activeitem(todos)">Active</a>
+      <a  class="px-3 cursor-pointer hover:text-green-400"  @click="completed(todos)">Completed</a>
     </div>
      <div>
-       <a href="/" @click="clearTodo(todos)">Clear completed</a>
+       <a href="/" class="hover:text-green-400" @click="clearTodo(todos)">Clear completed</a>
     </div>
 </div>
 </section>
