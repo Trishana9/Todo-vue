@@ -17,16 +17,29 @@
       v-for="(todo, index) in todos"
      :key="index">
        <div class="flex justify-center items-center">
-         <label><input @click="doneTodo(todo)" class="mr-3 my-2 text-emerald-500 focus:ring-0 focus:ring-offset-0 rounded-full border-slate-200 h-6 w-6" type="checkbox" v-model="todo.done" />
+         <label><input 
+         v-bind:class="{ 'completed' : todos.done }"
+         
+         @click="doneTodo(todo)" class="mr-3 my-2 text-emerald-500 focus:ring-0 focus:ring-offset-0 rounded-full border-slate-200 h-6 w-6" type="checkbox" v-model="todo.done" />
+         
           </label>
-          <p class="items w-[410px] text-xl" @click="doneTodo(todo)">{{ todo.content }}</p>
+          <label 
+          class="items w-[410px] text-xl" 
+           v-bind:class="{ 'completed' : todos.done }"           
+           @click="doneTodo(todo)" v-on:dblclick="edititem(todos)">{{ todo.content }}</label>
+             <!-- <form @submit.prevent="addTodo()">   
+                <input 
+                type="text"
+                v-model="todo.content"
+                />
+              </form> -->
           <button @click="removeTodo(index)"><i class="fa fa-trash text-xl hover:text-red-500" aria-hidden="true"></i></button>
        </div>
 
       </li>
     </ul>
   </div>
-  <h4 h4 v-if="todos.length === 0">Empty list.</h4>
+  <h4 class="flex justify-center font-bold py-5" v-if="todos.length === 0">Empty list.</h4>
   <div class="flex px-5 py-2 border-2 border-transparent border-t-gray-200" >
     <p>{{todos.length}} items</p>
     <div class="px-10 ">
@@ -42,7 +55,7 @@
 </template>
 
 <script>
-import { ref } from 'vue';
+import { ref , onMounted } from 'vue';
 export default {
 name: 'TodoApp',
 setup () {
@@ -50,6 +63,7 @@ setup () {
     const newTodo = ref('');
     const todosData = JSON.parse(localStorage.getItem('todos')) || [];
     const todos = ref(todosData);
+  
 
     function doneAll(todos){
       console.log(todos.length)
@@ -132,3 +146,9 @@ setup () {
   }
 }
 </script>
+
+<style>
+      .completed {
+        text-decoration: line-through;
+      }
+    </style>
