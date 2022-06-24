@@ -17,35 +17,41 @@
       v-for="(todo, index) in todos"
      :key="index">
        <div class="flex justify-center items-center">
-         <label><input 
-         v-bind:class="{ 'completed' : todos.done }"
-         
-         @click="doneTodo(todo)" class="mr-3 my-2 text-emerald-500 focus:ring-0 focus:ring-offset-0 rounded-full border-slate-200 h-6 w-6" type="checkbox" v-model="todo.done" />
-         
+         <!-- checkbox -->
+         <label><input          
+         @click="doneTodo(todo)" class="mr-3 my-2 text-emerald-500 focus:ring-0 focus:ring-offset-0 rounded-full border-slate-200 h-6 w-6" type="checkbox" v-model="todo.done" />         
           </label>
+        <!-- item -->
           <label 
           class="items w-[410px] text-xl" 
-           v-bind:class="{ 'completed' : todos.done }"           
-           @click="doneTodo(todo)" v-on:dblclick="edititem(todos)">{{ todo.content }}</label>
-             <!-- <form @submit.prevent="addTodo()">   
-                <input 
+          v-show="hideItem"         
+           @click="doneTodo(todo)">{{ todo.content }}</label>
+
+        <!-- edit input -->
+          <form @submit.prevent="editTodo()">   
+            <input class="w-[410px] text-xl bg-transparent border border-transparent "
                 type="text"
                 v-model="todo.content"
-                />
-              </form> -->
-          <button @click="removeTodo(index)"><i class="fa fa-trash text-xl hover:text-red-500" aria-hidden="true"></i></button>
+                v-show="displayedit"
+             />
+            </form>
+        <!-- edit and delete button -->
+            <button @click="displayeditTodo(todos,index)"><i class="fa fa-pencil-square-o text-xl hover:text-blue-500 pr-2" aria-hidden="true"></i></button>
+            <button @click="removeTodo(index)"><i class="fa fa-trash text-xl hover:text-red-500" aria-hidden="true"></i></button>
        </div>
 
       </li>
     </ul>
   </div>
+
   <h4 class="flex justify-center font-bold py-5" v-if="todos.length === 0">Empty list.</h4>
+  
   <div class="flex px-5 py-2 border-2 border-transparent border-t-gray-200" >
     <p>{{todos.length}} items</p>
     <div class="px-10 ">
       <a href="/" class="px-3  hover:text-green-400" >All</a>
-      <a  class="px-3 cursor-pointer hover:text-green-400" @click="activeitem(todos)">Active</a>
-      <a  class="px-3 cursor-pointer hover:text-green-400"  @click="completed(todos)">Completed</a>
+      <a  class="px-3 cursor-pointer hover:text-green-400" @click="activeitem()">Active</a>
+      <a  class="px-3 cursor-pointer hover:text-green-400"  @click="completed()">Completed</a>
     </div>
      <div>
        <a href="/" class="hover:text-green-400" @click="clearTodo(todos)">Clear completed</a>
@@ -63,6 +69,9 @@ setup () {
     const newTodo = ref('');
     const todosData = JSON.parse(localStorage.getItem('todos')) || [];
     const todos = ref(todosData);
+    const displayedit = ref(false);
+    const hideItem = ref(true);
+    const editedTodo= null
   
 
     function doneAll(todos){
@@ -75,7 +84,6 @@ setup () {
     }
 
     function notDone(todos){
-      console.log('hello')
       for(let i = 0 ; i< todos.length; i++){
           todos[i].done = false;
       }
@@ -84,7 +92,7 @@ setup () {
     }
 
     function addTodo () {
-      if (newTodo.value) {
+      if (newTodo.value.trim()) {
       todos.value.push({
         id: idItem,
         done: false,
@@ -94,6 +102,22 @@ setup () {
       idItem++;
       }
       saveData();
+    }
+
+    function editTodo(){
+      addTodo();
+      this.displayedit = false
+      this.hideItem = true
+    }
+
+    function displayeditTodo(todos,index){
+      for(let i = 0 ; i< todos.length; i++){
+        if (i == index){
+            this.displayedit = true
+            this.hideItem = false
+        }
+      }
+     
     }
 
     function doneTodo (todo) {
@@ -114,13 +138,13 @@ setup () {
       this.todos = JSON.parse(localStorage.getItem('todos')) || [];
     }
 
-    function activeitem(todos){
+    function activeitem(){
       let datatodo = JSON.parse(localStorage.getItem('todos')) || [];
       this.todos =datatodo.filter(data => data.done != true);
     }
 
 
-    function completed(todos){
+    function completed(){
       let datatodo = JSON.parse(localStorage.getItem('todos')) || [];
       this.todos =datatodo.filter(data => data.done != false);
     }
@@ -131,7 +155,11 @@ setup () {
       localStorage.setItem('todos', storageData);
     }
     return {
+      displayedit,
+      hideItem,
       todos,
+      displayeditTodo,
+      editTodo,
       newTodo,
       doneAll,
       notDone,
