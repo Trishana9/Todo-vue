@@ -15,7 +15,9 @@
     <ul>
       <li 
       v-for="(todo, index) in todos"
-     :key="index">
+     :key="index"
+     
+     >
        <div class="flex justify-center items-center">
          <!-- checkbox -->
          <label><input          
@@ -23,6 +25,7 @@
           </label>
         <!-- item -->
           <label 
+           :class="{ completed: todo.done}"
           class="items w-[410px] text-xl" 
           v-show="hideItem"         
            @click="doneTodo(todo)">{{ todo.content }}</label>
@@ -178,5 +181,6 @@ setup () {
 <style>
       .completed {
         text-decoration: line-through;
+        color: #A9A9A9;
       }
     </style>
